@@ -21,3 +21,12 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+lib/demo.html
+lib/LSortByDrag.common.js
+lib/LSortByDrag.common.js.map
+lib/LSortByDrag.css
+lib/LSortByDrag.umd.js
+lib/LSortByDrag.umd.js.map
+lib/LSortByDrag.umd.min.js
+lib/LSortByDrag.umd.min.js.map
+src/components/HelloWorld.vue
