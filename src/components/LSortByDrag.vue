@@ -2,12 +2,14 @@
   <div
     class="box"
     :class="mousedown ? 'move' : 'pointer'"
+    style="user-select: none"
     :style="{
       width: width + 'px',
       height: Math.ceil(list.length / n) * itemHeight + 'px',
     }"
     @mouseup="handleMoveUp"
     @mouseleave="handleMoveUp"
+    @touchend="handleMoveUp"
   >
     <div
       v-for="(item, index) in list"
@@ -22,7 +24,9 @@
         height: itemHeight + 'px',
       }"
       @mousedown="handleMouseDown($event, index)"
+      @touchstart="handleMouseDown($event, index)"
       @mousemove="handleMove"
+      @touchmove="handleMove"
     >
       <slot :scope="{ ...item, index }"></slot>
     </div>
@@ -37,7 +41,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    list: {
+    data: {
       type: Array,
       default: () => {
         return [];
@@ -67,21 +71,35 @@ export default {
       startX: 0,
       startY: 0,
       moveIndex: null,
+      list: [],
     };
   },
   methods: {
     handleMouseDown(e, index) {
       if (this.drag) {
         this.mousedown = true;
-        this.startX = e.clientX;
-        this.startY = e.clientY;
+        if (this.isMobile()) {
+          this.startX = e.changedTouches[0].clientX;
+          this.startY = e.changedTouches[0].clientY;
+        } else {
+          this.startX = e.clientX;
+          this.startY = e.clientY;
+        }
         this.moveIndex = index;
       }
     },
     handleMove(e) {
       if (this.mousedown && this.drag) {
-        const x = e.clientX - this.startX;
-        const y = e.clientY - this.startY;
+        let moveX, moveY;
+        if (this.isMobile()) {
+          moveX = e.changedTouches[0].clientX;
+          moveY = e.changedTouches[0].clientY;
+        } else {
+          moveX = e.clientX;
+          moveY = e.clientY;
+        }
+        const x = moveX - this.startX;
+        const y = moveY - this.startY;
         const my =
           y < 0
             ? Math.ceil(y / this.itemHeight)
@@ -120,22 +138,44 @@ export default {
     },
     handleMoveUp() {
       if (this.drag && this.mousedown) {
-        this.mousedown = false;
-        const newList = [];
-        this.list.forEach((item) => {
-          newList[item.index] = item;
+        this.$nextTick(() => {
+          this.mousedown = false;
+          const newList = [];
+          this.list.forEach((item) => {
+            newList[item.index] = item;
+          });
+          this.list = newList;
+          this.$emit("sort", newList);
         });
-        this.$emit("sort", newList);
       }
+    },
+    renderList() {
+      this.$nextTick(() => {
+        this.list.forEach((item, index) => {
+          item.index = index;
+        });
+      });
+    },
+    isMobile() {
+      return navigator.userAgent.match(
+        /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+      );
+    },
+  },
+  watch: {
+    "data.length": {
+      handler() {
+        this.list = this.data;
+        this.renderList();
+      },
     },
   },
   created() {
     this.n = Math.floor(
       Number.parseInt(this.width) / Number.parseInt(this.itemWidth)
     );
-    this.list.forEach((item, index) => {
-      item.index = index;
-    });
+    this.list = this.data;
+    this.renderList();
   },
 };
 </script>

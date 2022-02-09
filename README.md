@@ -1,24 +1,39 @@
-# lsortbydrag
+# LSortByDrag
 
-## Project setup
+## example
 ```
-yarn install
+    <LSortByDrag
+        :drag="true"
+        width="400"
+        item-width="80"
+        item-height="80"
+        :data="list"
+        @sort="onSort"
+      >
+      
+        <template v-slot="{ scope }">
+      
+         ...你的item内容
+        
+        </template>
+        
+    </LSortByDrag>
 ```
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## 参数说明
 
-### Lints and fixes files
-```
-yarn lint
-```
+|参数| 说明      | 类型      | 默认值   |
+|---|---------|---------|-------|
+|drag| 是否允许拖拽  | Boolean | false |
+|data| 需要排列的列表 | Array   | [ ]   |
+|itemWidth| 单项的宽    | Number  | 60    |
+|itemHeight| 单项的高    | Number  | 60    |
+|width| 整个区域的宽  | String  | 240px |
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+
+## 事件说明
+
+| 事件   | 说明     | 回调            |
+|------|--------|---------------|
+| sort | 排序之后触发 | list(排序之后的数组) |

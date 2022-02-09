@@ -5,8 +5,7 @@
     width="400"
     item-width="80"
     item-height="80"
-    :list="list"
-    @itemClick="handleClick"
+    :data="list"
     @sort="onSort"
   >
     <template v-slot="{ scope }">
@@ -14,7 +13,7 @@
         :src="require('@/assets/reduce.png')"
         class="iconImg"
         v-if="sort"
-        @click="handleClick(scope, scope.index)"
+        @click="reduce(scope, scope.index)"
       />
       <svg class="icon" style="width: 2.5em; height: 2.5em" aria-hidden="true">
         <use v-bind:xlink:href="scope.icon"></use>
@@ -43,8 +42,8 @@
 </template>
 
 <script>
-// import LSortByDrag from "./components/LSortByDrag";
-import LSortByDrag from "../lib/LSortByDrag.umd";
+import LSortByDrag from "./components/LSortByDrag";
+// import LSortByDrag from "../lib/LSortByDrag.umd";
 export default {
   name: "App",
   components: {
@@ -75,20 +74,18 @@ export default {
     handleSort() {
       this.sort = !this.sort;
     },
-    handleClick(item, index) {
+    reduce(item, index) {
       this.list2.push(item);
       this.list.splice(index, 1);
-      this.list.forEach((item, index) => {
-        item.index = index;
-      });
+      console.log(this.list.length, 0);
     },
     handleClick2(item, index) {
       this.list.push(item);
       this.list2.splice(index, 1);
     },
-    onSort(list) {
-      this.list = list;
-      console.log(this.list);
+    onSort() {
+      // this.list = list;
+      // console.log(list);
     },
   },
 };

@@ -1,0 +1,14 @@
+node_modules/
+src/
+public/
+.browserslistrc
+vue.config.js
+babel.config.js
+*.map
+lib/demo.html
+lib/LSortByDrag.common.js
+.idea
+.eslintignore
+.eslintrc.js
+yarn-error.log
+yarn.lock
